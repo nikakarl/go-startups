@@ -1,5 +1,6 @@
+import MoreStories from "@/app/more-stories";
 import Banner, { BannerProps } from "@/components/banner";
-import { getGenericPage } from "@/lib/api";
+import { getAllPosts, getGenericPage } from "@/lib/api";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -30,6 +31,8 @@ export default async function GenericPage(props: GenericPageProps) {
     return notFound();
   }
 
+  const allPosts = await getAllPosts(isEnabled);
+
   const componentsToRender: ComponentToRender[] = [];
   if (page?.items?.[0]?.fields?.components) {
     for (let i = 0; i < page.items[0].fields.components.length; i++) {
@@ -49,29 +52,16 @@ export default async function GenericPage(props: GenericPageProps) {
     }
   }
   return (
-    <div>
-      {componentsToRender.map((componenttorender, i) => {
-        const Component = componenttorender.Component;
-        const props = componenttorender.props;
-        //@ts-ignore
-        return <Component key={i} {...props} />;
-      })}
-    </div>
+    <>
+      <div>
+        {componentsToRender.map((componenttorender, i) => {
+          const Component = componenttorender.Component;
+          const props = componenttorender.props;
+          //@ts-ignore
+          return <Component key={i} {...props} />;
+        })}
+      </div>
+      <MoreStories morePosts={allPosts} />
+    </>
   );
 }
-
-/* 
-Get content from Cotnentful
-Loop via genericPage components field (inspect the type of each field in the component field)
-
-/*
-
-export default async function PostPage({
-    params,
-  }: {
-    params: { slug: string };
-  }) {
-    const { isEnabled } = draftMode();
-    const { post, morePosts } = await getPostAndMorePosts(params.slug, isEnabled);
-
-*/

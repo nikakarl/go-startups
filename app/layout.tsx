@@ -21,7 +21,6 @@ function Footer() {
           <h3 className="text-4xl lg:text-5xl font-bold tracking-tighter leading-tight text-center lg:text-left mb-10 lg:mb-0 lg:pr-4 lg:w-1/2">
             Built by Nika.
           </h3>
-          
         </div>
       </div>
     </footer>
@@ -37,7 +36,9 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body>
         <section className="min-h-screen">
-          <main>{children}</main>
+          <main>
+            <div className="container mx-auto px-5">{children}</div>
+          </main>
           <Footer />
         </section>
       </body>

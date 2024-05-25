@@ -38,6 +38,7 @@ function PostPreview({
 }
 
 export default function MoreStories({ morePosts }: { morePosts: any[] }) {
+  console.log(morePosts);
   return (
     <section>
       <h2 className="mb-8 text-6xl md:text-7xl font-bold tracking-tighter leading-tight">
