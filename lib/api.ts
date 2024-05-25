@@ -1,3 +1,6 @@
+import { createClient } from "contentful";
+import { draftMode } from "next/headers";
+
 const POST_GRAPHQL_FIELDS = `
   slug
   title
@@ -118,3 +121,35 @@ export async function getPostAndMorePosts(
     morePosts: extractPostEntries(entries),
   };
 }
+
+
+
+
+export const getGenericPage = async (slug:string,isDraftMode:boolean) => {
+  let accessToken: string
+  let host: string 
+
+  if(isDraftMode){
+    host="preview.contentful.com"
+    accessToken=process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN as string
+  } else {
+    host="cdn.contentful.com"
+    accessToken=process.env.CONTENTFUL_ACCESS_TOKEN as string
+  }
+  const client=createClient({
+    space: "ac3bh8bak2sr",
+    accessToken:accessToken,
+    host:host
+  })
+  const responseFromContentful = await client.getEntries({
+    content_type:"genericPage",
+    "fields.slug":slug
+  }) 
+    return responseFromContentful 
+  
+}
+
+
+
+
+// https://graphql.contentful.com/content/v1/spaces/ac3bh8bak2sr/explore?access_token=u2KXOdoTqLQXOG6FpArGvMQEA70kbS-qYOMpiTROxJU

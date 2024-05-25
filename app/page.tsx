@@ -8,6 +8,8 @@ import MoreStories from "./more-stories";
 
 import { getAllPosts } from "@/lib/api";
 import { CMS_NAME, CMS_URL } from "@/lib/constants";
+import Banner from "@/components/banner";
+
 
 function Intro() {
   return (
@@ -41,7 +43,7 @@ function HeroPost({
       </div>
       <div className="md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8 mb-20 md:mb-28">
         <div>
-          <h3 className="mb-4 text-4xl lg:text-6xl leading-tight">
+          <h3 className="mb-4 text-3xl lg:text-6xl leading-tight">
             <Link href={`/posts/${slug}`} className="hover:underline">
               {title}
             </Link>
@@ -68,6 +70,8 @@ export default async function Page() {
   return (
     <div className="container mx-auto px-5">
       <Intro />
+      <Banner />
+
       {heroPost && (
         <HeroPost
           title={heroPost.title}
