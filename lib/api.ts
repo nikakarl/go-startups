@@ -1,5 +1,6 @@
 import { createClient } from "contentful";
 import { draftMode } from "next/headers";
+import * as contentful from "contentful";
 
 const POST_GRAPHQL_FIELDS = `
   slug
@@ -46,7 +47,7 @@ async function fetchGraphQL(query: string, preview = false): Promise<any> {
       },
       body: JSON.stringify({ query }),
       next: { tags: ["posts"] },
-    },
+    }
   ).then((response) => response.json());
 }
 
@@ -67,7 +68,7 @@ export async function getPreviewPostBySlug(slug: string | null): Promise<any> {
         }
       }
     }`,
-    true,
+    true
   );
   return extractPost(entry);
 }
@@ -83,38 +84,38 @@ export async function getAllPosts(isDraftMode: boolean): Promise<any[]> {
         }
       }
     }`,
-    isDraftMode,
+    isDraftMode
   );
   return extractPostEntries(entries);
 }
 
 export async function getPostAndMorePosts(
   slug: string,
-  preview: boolean,
+  preview: boolean
 ): Promise<any> {
   const entry = await fetchGraphQL(
     `query {
       postCollection(where: { slug: "${slug}" }, preview: ${
-        preview ? "true" : "false"
-      }, limit: 1) {
+      preview ? "true" : "false"
+    }, limit: 1) {
         items {
           ${POST_GRAPHQL_FIELDS}
         }
       }
     }`,
-    preview,
+    preview
   );
   const entries = await fetchGraphQL(
     `query {
       postCollection(where: { slug_not_in: "${slug}" }, order: date_DESC, preview: ${
-        preview ? "true" : "false"
-      }, limit: 2) {
+      preview ? "true" : "false"
+    }, limit: 2) {
         items {
           ${POST_GRAPHQL_FIELDS}
         }
       }
     }`,
-    preview,
+    preview
   );
   return {
     post: extractPost(entry),
@@ -122,34 +123,50 @@ export async function getPostAndMorePosts(
   };
 }
 
+type GenericPageEntrySkeleton = {
+  contentTypeId: "genericPage";
+  fields: {
+    slug: contentful.EntryFieldTypes.Text;
+    components: contentful.EntryFieldTypes.Array<
+      contentful.EntryFieldTypes.EntryLink<BannerEntrySkeleton>
+    >;
+  };
+};
 
+type BannerEntrySkeleton = {
+  contentTypeId: "banner";
+  fields: {
+    heading: contentful.EntryFieldTypes.Text;
+    content: contentful.EntryFieldTypes.Text;
+    ctaText: contentful.EntryFieldTypes.Text;
+    ctaLink: contentful.EntryFieldTypes.Text;
+    image: contentful.EntryFieldTypes.AssetLink;
+  };
+};
 
+export const getGenericPage = async (slug: string, isDraftMode: boolean) => {
+  let accessToken: string;
+  let host: string;
 
-export const getGenericPage = async (slug:string,isDraftMode:boolean) => {
-  let accessToken: string
-  let host: string 
-
-  if(isDraftMode){
-    host="preview.contentful.com"
-    accessToken=process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN as string
+  if (isDraftMode) {
+    host = "preview.contentful.com";
+    accessToken = process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN as string;
   } else {
-    host="cdn.contentful.com"
-    accessToken=process.env.CONTENTFUL_ACCESS_TOKEN as string
+    host = "cdn.contentful.com";
+    accessToken = process.env.CONTENTFUL_ACCESS_TOKEN as string;
   }
-  const client=createClient({
+  const client = createClient({
     space: "ac3bh8bak2sr",
-    accessToken:accessToken,
-    host:host
-  })
-  const responseFromContentful = await client.getEntries({
-    content_type:"genericPage",
-    "fields.slug":slug
-  }) 
-    return responseFromContentful 
-  
-}
-
-
-
+    accessToken: accessToken,
+    host: host,
+  });
+  const responseFromContentful =
+    await client.withoutUnresolvableLinks.getEntries<GenericPageEntrySkeleton>({
+      content_type: "genericPage",
+      "fields.slug": slug,
+      include: 10,
+    });
+  return responseFromContentful;
+};
 
 // https://graphql.contentful.com/content/v1/spaces/ac3bh8bak2sr/explore?access_token=u2KXOdoTqLQXOG6FpArGvMQEA70kbS-qYOMpiTROxJU

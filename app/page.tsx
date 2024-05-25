@@ -10,7 +10,6 @@ import { getAllPosts } from "@/lib/api";
 import { CMS_NAME, CMS_URL } from "@/lib/constants";
 import Banner from "@/components/banner";
 
-
 function Intro() {
   return (
     <section className="flex-col md:flex-row flex items-center md:justify-between mt-16 mb-16 md:mb-12">
@@ -70,7 +69,6 @@ export default async function Page() {
   return (
     <div className="container mx-auto px-5">
       <Intro />
-      <Banner />
 
       {heroPost && (
         <HeroPost
