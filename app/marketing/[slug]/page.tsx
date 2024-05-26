@@ -1,7 +1,9 @@
 import MoreStories from "@/app/more-stories";
 import Banner, { BannerProps } from "@/components/banner";
+import OfferColumns from "@/components/offercolumns";
 import { getAllPosts, getGenericPage } from "@/lib/api";
 import { draftMode } from "next/headers";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -13,6 +15,7 @@ type GenericPageProps = {
 
 const COMPONENT_MAP = {
   banner: Banner,
+  offerColumns: OfferColumns,
 };
 
 type ComponentToRender = {
@@ -24,6 +27,7 @@ export default async function GenericPage(props: GenericPageProps) {
   const slug = props.params.slug;
   const { isEnabled } = draftMode();
   const page = await getGenericPage(slug, isEnabled);
+
   if (page === null) {
     return notFound();
   }
@@ -53,6 +57,14 @@ export default async function GenericPage(props: GenericPageProps) {
   }
   return (
     <>
+      <div>
+        <h2 className="mb-20 mt-8 text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
+          <Link href="/" className="hover:underline">
+            Kalcium
+          </Link>
+          .
+        </h2>
+      </div>
       <div>
         {componentsToRender.map((componenttorender, i) => {
           const Component = componenttorender.Component;
