@@ -156,7 +156,7 @@ export const getGenericPage = async (slug: string, isDraftMode: boolean) => {
     accessToken = process.env.CONTENTFUL_ACCESS_TOKEN as string;
   }
   const client = createClient({
-    space: "ac3bh8bak2sr",
+    space: process.env.CONTENTFUL_SPACE_ID as string,
     accessToken: accessToken,
     host: host,
   });
