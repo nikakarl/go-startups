@@ -25,7 +25,7 @@ type ComponentToRender = {
 
 export default async function GenericPage(props: GenericPageProps) {
   const slug = props.params.slug;
-  const { isEnabled } = draftMode();
+  const { isEnabled } = await draftMode();
   const page = await getGenericPage(slug, isEnabled);
 
   if (page === null) {
@@ -56,7 +56,8 @@ export default async function GenericPage(props: GenericPageProps) {
     }
   }
   return (
-    <>
+    //  <Providers ninetailed={{ preview: { allExperiences, allAudiences } }}>
+    <div>
       <div>
         <h2 className="mb-20 mt-8 text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
           <Link href="/" className="hover:underline">
@@ -74,6 +75,6 @@ export default async function GenericPage(props: GenericPageProps) {
         })}
       </div>
       <MoreStories morePosts={allPosts} />
-    </>
+    </div>
   );
 }
